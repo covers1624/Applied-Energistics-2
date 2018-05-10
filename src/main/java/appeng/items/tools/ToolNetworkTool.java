@@ -83,7 +83,7 @@ public class ToolNetworkTool extends AEBaseItem implements IGuiItem, IAEWrench, 
 		{
 			final RayTraceResult mop = AppEng.proxy.getRTR();
 
-			if( mop == null )
+			if( mop == null || mop.typeOfHit == RayTraceResult.Type.ENTITY )
 			{
 				this.onItemUseFirst( p, w, new BlockPos( 0, 0, 0 ), null, 0, 0, 0, hand ); // eh?
 			}
