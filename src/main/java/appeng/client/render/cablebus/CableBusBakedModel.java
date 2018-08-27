@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.block.state.IBlockState;
@@ -88,14 +87,14 @@ public class CableBusBakedModel implements IBakedModel
 
 		List<BakedQuad> quads = new ArrayList<>();
 
-		// The core parts of the cable will only be rendered in the CUTOUT layer. TRANSLUCENT is used only for
-		// translucent facades further down below.
+		// The core parts of the cable will only be rendered in the CUTOUT layer.
+		// Facades will add them selves to what ever the block would be rendered with,
+		// except when transparent facades are enabled, they are forced to TRANSPARENT.
 		if( layer == BlockRenderLayer.CUTOUT )
 		{
 
 			// First, handle the cable at the center of the cable bus
-			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k ->
-			{
+			final List<BakedQuad> cableModel = CABLE_MODEL_CACHE.computeIfAbsent( renderState, k -> {
 				final List<BakedQuad> model = new ArrayList<>();
 				this.addCableQuads( renderState, model );
 				return model;
@@ -138,14 +137,7 @@ public class CableBusBakedModel implements IBakedModel
 				}
 			}
 		}
-
-		this.facadeBuilder.addFacades(
-				layer,
-				renderState.getFacades(),
-				renderState.getBoundingBoxes(),
-				renderState.getAttachments().keySet(),
-				rand,
-				quads );
+		facadeBuilder.buildFacadeQuads( layer, renderState, rand, quads, partModels::get );
 
 		return quads;
 	}
